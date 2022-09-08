@@ -1373,7 +1373,7 @@ fail:
 
     return NULL;
 }
-
+#ifdef HAVE_DSA
 static ssh_string pki_dsa_signature_to_blob(const ssh_signature sig)
 {
     char buffer[40] = { 0 };
@@ -1459,6 +1459,7 @@ error:
     SSH_STRING_FREE(s);
     return NULL;
 }
+#endif
 
 static ssh_string pki_ecdsa_signature_to_blob(const ssh_signature sig)
 {
@@ -1552,9 +1553,11 @@ ssh_string pki_signature_to_blob(const ssh_signature sig)
     ssh_string sig_blob = NULL;
 
     switch(sig->type) {
+#ifdef HAVE_DSA
         case SSH_KEYTYPE_DSS:
             sig_blob = pki_dsa_signature_to_blob(sig);
             break;
+#endif
         case SSH_KEYTYPE_RSA:
         case SSH_KEYTYPE_RSA1:
             sig_blob = ssh_string_copy(sig->raw_sig);
@@ -1646,7 +1649,7 @@ errout:
     SSH_STRING_FREE(sig_blob_padded);
     return SSH_ERROR;
 }
-
+#ifdef HAVE_DSA
 static int pki_signature_from_dsa_blob(UNUSED_PARAM(const ssh_key pubkey),
                                        const ssh_string sig_blob,
                                        ssh_signature sig)
@@ -1773,7 +1776,7 @@ error:
     DSA_SIG_free(dsa_sig);
     return SSH_ERROR;
 }
-
+#endif
 static int pki_signature_from_ecdsa_blob(UNUSED_PARAM(const ssh_key pubkey),
                                          const ssh_string sig_blob,
                                          ssh_signature sig)
@@ -1938,12 +1941,14 @@ ssh_signature pki_signature_from_blob(const ssh_key pubkey,
     sig->hash_type = hash_type;
 
     switch(type) {
+#ifdef HAVE_DSA
         case SSH_KEYTYPE_DSS:
             rc = pki_signature_from_dsa_blob(pubkey, sig_blob, sig);
             if (rc != SSH_OK) {
                 goto error;
             }
             break;
+#endif
         case SSH_KEYTYPE_RSA:
         case SSH_KEYTYPE_RSA1:
             rc = pki_signature_from_rsa_blob(pubkey, sig_blob, sig);
