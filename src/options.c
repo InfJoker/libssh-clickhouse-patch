@@ -484,6 +484,15 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
     }
 
     switch (type) {
+        case SSH_OPTIONS_OWNS_SOCKET:
+            if (value == NULL) {
+                ssh_set_error_invalid(session);
+                return -1;
+            } else {
+                bool *x = (bool *)value;
+                session->opts.owns_socket = *x;
+            }
+            break;
         case SSH_OPTIONS_HOST:
             v = value;
             if (v == NULL || v[0] == '\0') {

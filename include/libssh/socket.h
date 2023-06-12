@@ -34,6 +34,7 @@ ssh_socket ssh_socket_new(ssh_session session);
 void ssh_socket_reset(ssh_socket s);
 void ssh_socket_free(ssh_socket s);
 void ssh_socket_set_fd(ssh_socket s, socket_t fd);
+int ssh_socket_owns_fd(ssh_socket s);
 socket_t ssh_socket_get_fd(ssh_socket s);
 #ifndef _WIN32
 int ssh_socket_unix(ssh_socket s, const char *path);

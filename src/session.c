@@ -108,6 +108,7 @@ ssh_session ssh_new(void)
     session->opts.StrictHostKeyChecking = 1;
     session->opts.port = 0;
     session->opts.fd = -1;
+    session->opts.owns_socket = true;
     session->opts.compressionlevel = 7;
     session->opts.nodelay = 0;
 
@@ -1039,7 +1040,7 @@ int ssh_get_pubkey_hash(ssh_session session, unsigned char **hash)
 /**
  * @brief Deallocate the hash obtained by ssh_get_pubkey_hash.
  *
- * This is required under Microsoft platform as this library might use a 
+ * This is required under Microsoft platform as this library might use a
  * different C library than your software, hence a different heap.
  *
  * @param[in] hash      The buffer to deallocate.
